@@ -1,7 +1,6 @@
 from hashids import Hashids
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_bootstrap import Bootstrap
-
 import boto3
 import random
 import string
@@ -12,9 +11,10 @@ app.config['SECRET_KEY'] = 'jCOo4PAnmU6A0j2lpKeI-A'
 hashids = Hashids(min_length=4, salt=app.config['SECRET_KEY'])
 
 # set up boto3 connection
-AWS_region = 'us-east-1'
-boto3.setup_default_session(profile_name='iamadmin-production')
-dynamodb = boto3.resource(service_name='dynamodb')
+#AWS_region = 'us-east-1'
+#boto3.setup_default_session(profile_name='iamadmin-production')
+#dynamodb = boto3.resource(service_name='dynamodb')
+dynamodb = boto3.resource(service_name='dynamodb', region_name='us-east-1')
 tablename = "url"
 # create dynamodb tale for storing url
 
