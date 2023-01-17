@@ -4,17 +4,19 @@ from flask_bootstrap import Bootstrap
 import boto3
 import random
 import string
+import os
 
 app = Flask(__name__)
 Bootstrap(app)
 app.config['SECRET_KEY'] = 'jCOo4PAnmU6A0j2lpKeI-A'
 hashids = Hashids(min_length=4, salt=app.config['SECRET_KEY'])
-
+AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
 # set up boto3 connection
 #AWS_region = 'us-east-1'
 #boto3.setup_default_session(profile_name='iamadmin-production')
 #dynamodb = boto3.resource(service_name='dynamodb')
-dynamodb = boto3.resource(service_name='dynamodb', region_name='us-east-1')
+dynamodb = boto3.resource(service_name='dynamodb', region_name='us-east-1',aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
 tablename = "url"
 # create dynamodb tale for storing url
 
