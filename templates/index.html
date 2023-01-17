@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class="text-center mb-3">{% block title %} Welcome to my URL shortener {% endblock %}</h1>
+    <h3 class="text-center mb-3">{% block title %} Welcome to my URL shortener, please enter your complete url inlcluding http:// below {% endblock %}</h3>
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
@@ -26,7 +26,8 @@
 
             {% if short_url %}
             <hr>
-            <span>{{ short_url }}</span>
+
+            <span style="color:white"> Shortened URL: <a href="{{ short_url }}" style="color:white"> {{ short_url }} </a></span>
             {% endif %}
         </div>
         <div class="col-md-2"></div>
