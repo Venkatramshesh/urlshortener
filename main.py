@@ -4,6 +4,7 @@ from flask_bootstrap import Bootstrap
 
 import boto3
 import random
+import string
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -66,11 +67,15 @@ def index():
         custom_id = request.form['custom_id']
 
         newid = random.randrange(10000)
+
         if not url:
             flash('The URL is required!')
             return redirect(url_for('index.html'))
+            # add url and unique id to dynamodb table
 
-        # if cusomter enters cusot id
+        url_inputs = dynamodb.Table('url')
+
+        # if cusomter enters custom id
         if custom_id:
             output = []
             for character in custom_id:
@@ -80,15 +85,15 @@ def index():
             finalnum= ''.join(outputnew)
             newid = int(finalnum)
 
-        # add url and unique id to dynamodb table
-        url_inputs = dynamodb.Table('url')
 
         url_inputs.put_item(Item={'id': newid,
-                                  'org_url': url
+                                  'org_url': url,
                                   })
 
         hashid = hashids.encode(newid)
-        short_url = request.host_url + hashid
+
+        if custom_id : short_url = request.host_url + custom_id
+        else: short_url = request.host_url + hashid
         #print(short_url)
 
         return render_template('index.html', short_url=short_url)
@@ -97,13 +102,25 @@ def index():
 
 @app.route('/<id>')
 def url_redirect(id):
-    #print(id)
-    original_id = hashids.decode(id)
+
+    if type(id) is str:
+
+        output = []
+        for character in id:
+            number = ord(character.lower()) - 96;
+            output.append(number);
+        outputnew = [str(x) for x in output]
+        finalnum = ''.join(outputnew)
+        newid = int(finalnum)
+        original_id = newid
+    else:
+        original_id = hashids.decode(id)
+        original_id = original_id[0]
     #print(original_id)
     if original_id:
-        original_id = original_id[0]
         url_inputs = dynamodb.Table('url')
         url_data=url_inputs.get_item(Key={'id': original_id})
+
         #print(url_data)
         original_url = url_data["Item"]['org_url']
         print(original_url)
